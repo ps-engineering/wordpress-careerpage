@@ -1,0 +1,773 @@
+@charset "UTF-8";
+div.wpcf7-spam-blocked {
+  border: 2px solid #ffa500;
+}
+
+h3 strong {
+  font-weight: normal;
+}
+
+/**
+ * dropdown
+ */
+.jplist-dd {
+  width: 200px;
+  background: #efefef;
+  color: #575757;
+  font-size: 13px;
+  border-radius: 2px;
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.jplist-dd-panel {
+  text-align: center;
+  font-size: 15px;
+  padding: 5px 7px;
+  transition: color 0.5s;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.jplist-dd-panel::after {
+  content: "▼";
+  display: inline-block;
+  float: right;
+  transition: transform 0.5s;
+  color: #a5a5a5;
+}
+
+.jplist-dd-panel.jplist-dd-opened::after {
+  transform: rotate(180deg);
+}
+
+.jplist-dd-panel:hover {
+  color: #000;
+}
+
+.jplist-dd-content {
+  display: none;
+}
+
+.jplist-dd-content.jplist-dd-opened {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  box-shadow: 3px 5px 5px #e0e0e0;
+  position: absolute;
+  background: #f5f5f5;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.jplist-dd-item {
+  border-bottom: 1px dotted #ccc;
+  box-sizing: border-box;
+  padding: 5px 15px;
+  transition: background-color 0.5s;
+}
+
+.jplist-dd-item:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.jplist-dd-item:last-child {
+  border: 0;
+}
+
+/**
+* horizontal
+*/
+.jplist-slider {
+  width: 300px;
+  height: 20px;
+  background: #efefef;
+  margin-right: 15px;
+  margin-bottom: 35px;
+  border-radius: 2px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.jplist-slider::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: blue;
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.jplist-slider-holder-1,
+.jplist-slider-holder-2 {
+  width: 10px;
+  height: 100%;
+  border-radius: 2px;
+  display: block;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, 0);
+  z-index: 200;
+  transition: 0.3s background-color;
+  padding: 0;
+  margin: 0;
+  font-size: 0;
+  line-height: 0;
+}
+
+.jplist-slider-holder-1 {
+  background: #000;
+}
+
+.jplist-slider-holder-1:active {
+  background: #9f35ff;
+}
+
+.jplist-slider-holder-2 {
+  background: #822121;
+}
+
+.jplist-slider-holder-2:active {
+  background: #ff2888;
+}
+
+.jplist-slider-range {
+  width: 0;
+  height: 20px;
+  background: #ccc;
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/**
+ * vertical
+ */
+.jplist-slider.jplist-slider-vertical {
+  width: 20px;
+  height: 300px;
+}
+
+.jplist-slider.jplist-slider-vertical::before {
+  width: 3px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, 0);
+}
+
+.jplist-slider.jplist-slider-vertical .jplist-slider-holder-1,
+.jplist-slider.jplist-slider-vertical .jplist-slider-holder-2 {
+  height: 10px;
+  width: 100%;
+  left: 0;
+  top: 0;
+  transform: translate(0, -50%);
+}
+
+.jplist-slider.jplist-slider-vertical .jplist-slider-range {
+  width: 100%;
+  height: 0;
+}
+.job__list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border-top: 0 !important;
+  border-spacing: 0;
+}
+.job__list.bold tr td {
+  font-weight: 700;
+}
+.job__list.small {
+  margin-top: 2rem;
+}
+.job__list.small thead tr td {
+  border-bottom: 0;
+}
+.job__list.small tr td {
+  border-bottom: 0;
+  font-size: 0.8em;
+  padding: 0.4em 2em 0.4em 0;
+}
+.job__list thead tr td {
+  font-weight: 700;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+.job__list tr td {
+  margin: 0;
+  padding: 0.8em 2em 0.8em 0;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+.job__list tr td:first-child {
+  width: 50%;
+}
+.job__list tr td:last-child {
+  padding-right: 0;
+  text-align: right;
+}
+.job__list tr td a {
+  text-decoration: none;
+}
+.job__list tr td a:hover {
+  text-decoration: underline;
+}
+@media only screen and (max-width: 1080px) {
+  .job__list tr td a {
+    text-decoration: underline;
+  }
+}
+.job__list.bt.small {
+  margin-bottom: 2rem;
+}
+.job__list.bt.small td:first-child {
+  padding-top: 0.5em !important;
+}
+.job__list.bt.small tr:last-child td:first-child {
+  padding-bottom: 2em !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+.job__list.bt tr td {
+  padding-right: 0 !important;
+  width: 100% !important;
+  text-align: left !important;
+  display: flex;
+  border-bottom: 0;
+  padding: 0 0 !important;
+  font-size: 0.9rem;
+}
+.job__list.bt tr td:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 1em !important;
+}
+.job__list.bt tr td:first-child {
+  padding-top: 1em !important;
+}
+.job__list.with-header.bt tr td:before {
+  content: attr(data-th);
+  display: block;
+  width: 35%;
+  padding-right: 1em;
+}
+
+.job__list.bt tr td span {
+  flex: 1;
+}
+
+.edd-items-list {
+  overflow-y: scroll !important;
+}
+
+.pagination .jplist-holder {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.pagination .jplist-holder .page-numbers {
+  display: block;
+  cursor: pointer;
+}
+.pagination .jplist-holder .page-numbers.jplist-selected {
+  color: #FFF !important;
+  background-color: var(--color-highlight) !important;
+  font-weight: 600 !important;
+}
+
+.disabled-control-slider {
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+.cities_with_radius_search {
+  display: flex;
+  align-items: center;
+}
+body .col__3--12 .cities_with_radius_search {
+  flex-wrap: wrap;
+}
+
+.cities_with_radius_search .edd-root {
+  width: 50%;
+}
+body .col__3--12 .cities_with_radius_search .edd-root {
+  width: 100%;
+}
+
+.cities_with_radius_search .edd-root + label {
+  width: calc(16px + 40px + 8rem);
+  padding-left: 16px;
+}
+body .col__3--12 .cities_with_radius_search .edd-root + label {
+  width: calc(40px + 8rem);
+  padding-left: 0;
+}
+
+.cities_with_radius_search .edd-root + label span {
+  margin: 0;
+  font-size: 0.9rem !important;
+  height: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.cities_with_radius_search input[type=number] {
+  flex: 1;
+}
+.cities_with_radius_search input[type=number]:disabled {
+  opacity: 0.6;
+}
+.cities_with_radius_search div[data-jplist-control=slider-range-filter] {
+  width: calc(50% - 16px - 40px - 8rem);
+}
+.cities_with_radius_search div[data-jplist-control=slider-range-filter] .jplist-slider {
+  width: 100%;
+  margin-bottom: 0;
+  margin-right: 0;
+  background-color: transparent;
+  height: 15px !important;
+}
+.cities_with_radius_search div[data-jplist-control=slider-range-filter] .jplist-slider .jplist-slider-holder-1 {
+  pointer-events: none !important;
+}
+.cities_with_radius_search div[data-jplist-control=slider-range-filter] .jplist-slider .jplist-slider-holder-1, .cities_with_radius_search div[data-jplist-control=slider-range-filter] .jplist-slider .jplist-slider-holder-2 {
+  border-radius: 6px;
+  width: 6px;
+}
+.cities_with_radius_search div[data-jplist-control=slider-range-filter] .jplist-slider .jplist-slider-range {
+  height: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: red;
+  z-index: 101;
+}
+.cities_with_radius_search div[data-jplist-control=slider-range-filter] .jplist-slider-values {
+  font-size: 0.9rem;
+}
+
+.radius-button-hide {
+  display: none;
+}
+
+.job__detail {
+  color: #3b3b3b;
+}
+
+.icon_positiontype {
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M11 7.4V13h4.68v-2H13V7.4zm7.36-1.76a9 9 0 00-12.72 0L5 6.31l-2-2V10h5.66L6.38 7.72l.67-.67a7 7 0 11-2 6h-2A9 9 0 0012 21a9 9 0 006.36-15.36z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 1em auto;
+  padding-left: 1.5em;
+  font-weight: 500;
+}
+
+.icon_city {
+  background-image: url("data:image/svg+xml;utf8,<svg height='141.732' width='141.732' viewbox='0 0 141.732 141.732' xmlns='http://www.w3.org/2000/svg'><path d='M95.35 50.645c0 13.98-11.389 25.322-25.438 25.322-14.051 0-25.438-11.342-25.438-25.322 0-13.984 11.389-25.322 25.438-25.322C83.964 25.322 95.35 36.66 95.35 50.645m26.393 0C121.743 22.674 98.966 0 70.866 0 42.768 0 19.989 22.674 19.989 50.645c0 12.298 4.408 23.574 11.733 32.345l39.188 56.283 39.761-57.104a50.048 50.048 0 003.916-5.625l.402-.574h-.066a50.245 50.245 0 006.82-25.325'/></svg>");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 1em auto;
+  padding-left: 1.5em;
+  font-weight: 500;
+}
+
+.jplist-dd[data-type=items-per-page-dd] {
+  display: none;
+}
+
+.standalone_search_holder {
+  width: 100%;
+  display: block;
+}
+
+.standalone_search {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+.standalone_search .button {
+  margin-left: 10px;
+}
+
+.map {
+  width: 100%;
+  height: 400px;
+}
+
+.gm-style-iw + button {
+  display: none !important;
+}
+
+::ng-deep .gm-style .gm-style-iw-c button {
+  display: none !important;
+}
+
+button.gm-ui-hover-effect {
+  visibility: hidden !important;
+}
+
+.job_application_form {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  /*
+  .jaf__separator {
+  	text-align: left; 
+  	margin-top: 2em;
+  }
+  */
+}
+.job_application_form .jaf__single-column {
+  width: 100%;
+}
+.job_application_form .jaf__single-column.spacer {
+  text-align: left;
+  margin-top: 2em;
+}
+.job_application_form .jaf__single-column.description {
+  text-align: left;
+}
+.job_application_form .jaf__single-column.half {
+  width: calc(50% - 7px);
+}
+.job_application_form .jaf__single-column.avatar img {
+  margin: 8px 0 0 0;
+  max-width: 50px;
+}
+.job_application_form .jaf__single-column .radio__checkbox__wrapper {
+  display: flex;
+}
+.job_application_form .jaf__single-column .file__upload__wrapper {
+  margin-top: 1.5rem;
+}
+.job_application_form .jaf__single-column .file__upload__wrapper .file__upload__inner label {
+  display: flex;
+  background-color: rgba(184, 184, 184, 0.2);
+  justify-content: space-between;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  font-size: 14px;
+  color: #999;
+  font-family: "Open Sans";
+  margin: 7px 0;
+  margin-top: 15px;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 100ms ease-out;
+}
+.job_application_form .jaf__single-column .file__upload__wrapper .file__upload__inner label.uploaded .file_names:before {
+  background-image: url("data:image/svg+xml;utf8,<svg height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5.9 8.1L4.5 9.5 9 14 19 4l-1.4-1.4L9 11.2 5.9 8.1zM18 10c0 4.4-3.6 8-8 8s-8-3.6-8-8 3.6-8 8-8c.8 0 1.5.1 2.2.3L13.8.7C12.6.3 11.3 0 10 0 4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10h-2z' fill='%2348dc00' fill-rule='evenodd'/></svg>");
+}
+.job_application_form .jaf__single-column .file__upload__wrapper .file__upload__inner label .file_names {
+  position: relative;
+  padding-left: 3.5rem;
+}
+.job_application_form .jaf__single-column .file__upload__wrapper .file__upload__inner label .file_names:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 200%;
+  width: 2rem;
+  background-image: url("data:image/svg+xml;utf8,<svg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'><path d='M28 22v6H4v-6H0v6a4.012 4.012 0 004 4h24a4.012 4.012 0 004-4v-6h-4zM6 10l2.82 2.82L14 7.66V24h4V7.66l5.18 5.16L26 10 16 0 6 10z' fill='%23C6C6C6' fill-rule='nonzero'/></svg>");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 100% auto;
+  transform: translateY(-50%);
+}
+.job_application_form .jaf__single-column .file__upload__wrapper .file__upload__inner label .upload_button {
+  font-weight: 700;
+  color: var(--color-main);
+  position: relative;
+  padding-bottom: 8px;
+}
+.job_application_form .jaf__single-column .file__upload__wrapper .file__upload__inner label .upload_button:before {
+  content: "";
+  display: block;
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  background-color: var(--color-main);
+}
+.job_application_form .jaf__single-column .file__upload__wrapper .file__upload__inner label:hover {
+  background-color: rgba(184, 184, 184, 0.35);
+}
+.job_application_form .jaf__single-column .file__upload__wrapper .file__upload__inner input {
+  margin: 0;
+  opacity: 0;
+  margin: 0;
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  line-height: 0;
+  font-size: 0;
+}
+.job_application_form .jaf__single-column .single__radio-check {
+  position: relative;
+  margin-right: 2rem;
+}
+.job_application_form .jaf__single-column .single__radio-check label {
+  position: relative;
+  display: block;
+  padding-left: 0;
+}
+.job_application_form .jaf__single-column .single__radio-check label input[type=radio],
+.job_application_form .jaf__single-column .single__radio-check label input[type=checkbox] {
+  position: absolute;
+  opacity: 0;
+  width: 22px;
+  height: 22px;
+  left: 0;
+  opacity: 0;
+}
+.job_application_form .jaf__single-column .single__radio-check label .radio-check__label {
+  display: block;
+  padding-left: calc(20px + 1rem);
+  position: relative;
+}
+.job_application_form .jaf__single-column .single__radio-check label input[type=radio] + .radio-check__label:before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #999;
+  position: absolute;
+  left: 1px;
+  top: 1px;
+}
+.job_application_form .jaf__single-column .single__radio-check label input[type=radio] + .radio-check__label:after {
+  content: "";
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-main);
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  opacity: 0;
+}
+.job_application_form .jaf__single-column .single__radio-check label input[type=radio]:checked + .radio-check__label:before {
+  border-color: var(--color-main);
+}
+.job_application_form .jaf__single-column .single__radio-check label input[type=radio]:checked + .radio-check__label:after {
+  opacity: 1;
+}
+.job_application_form .jaf__single-column .single__radio-check label input[type=checkbox] + .radio-check__label:before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #999;
+  position: absolute;
+  left: 1px;
+  top: 1px;
+}
+.job_application_form .jaf__single-column .single__radio-check label input[type=checkbox] + .radio-check__label:after {
+  content: "✓";
+  display: block;
+  width: 20px;
+  height: 20px;
+  color: var(--color-main);
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  line-height: 20px;
+  opacity: 0;
+  text-align: center;
+}
+.job_application_form .jaf__single-column .single__radio-check label input[type=checkbox]:checked + .radio-check__label:before {
+  border-color: var(--color-main);
+}
+.job_application_form .jaf__single-column .single__radio-check label input[type=checkbox]:checked + .radio-check__label:after {
+  opacity: 1;
+}
+.job_application_form .jaf__single-column .single__radio-tag {
+  position: relative;
+  display: inline-block;
+  margin-right: 5px;
+}
+.job_application_form .jaf__single-column .single__radio-tag label {
+  position: relative;
+  display: block;
+}
+.job_application_form .jaf__single-column .single__radio-tag label .single__tag {
+  position: relative;
+  display: block;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+.job_application_form .jaf__single-column .single__radio-tag label .single__tag:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background-color: #cbcbcb;
+  border-radius: 5px;
+  pointer-events: none;
+}
+.job_application_form .jaf__single-column .single__radio-tag label .single__tag span {
+  position: relative;
+  z-index: 1;
+}
+.job_application_form .jaf__single-column .single__radio-tag label input[type=radio],
+.job_application_form .jaf__single-column .single__radio-tag label input[type=checkbox] {
+  position: absolute;
+  opacity: 0;
+  width: auto;
+  height: auto;
+  left: 0;
+}
+.job_application_form .jaf__single-column .single__radio-tag label input[type=checkbox]:checked + .single__tag {
+  color: #FFFFFF;
+}
+.job_application_form .jaf__single-column .single__radio-tag label input[type=checkbox]:checked + .single__tag:before {
+  background-color: var(--color-main);
+}
+
+#job_application_form .wpcf7-response-output {
+  max-width: none;
+  margin-top: 2rem;
+}
+#job_application_form .job_application_form_success {
+  width: 100%;
+}
+#job_application_form button {
+  width: 100%;
+  /*&.loading {
+  	background-color: green !important;
+  }*/
+}
+#job_application_form button.sending {
+  background-image: url("data:image/svg+xml;utf8,<svg width='38' height='38' xmlns='http://www.w3.org/2000/svg' stroke='%23fff'><g transform='translate(1 1)' stroke-width='2' fill='none' fill-rule='evenodd'><circle stroke-opacity='.5' cx='18' cy='18' r='18'/><path d='M36 18c0-9.94-8.06-18-18-18'><animateTransform attributeName='transform' type='rotate' from='0 18 18' to='360 18 18' dur='1s' repeatCount='indefinite'/></path></g></svg>");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 1em) center;
+  background-size: 1.5em auto;
+}
+
+.job_application_form__column {
+  padding-right: 60px;
+}
+@media only screen and (max-width: 1080px) {
+  .job_application_form__column {
+    padding-right: 0;
+  }
+}
+
+.af__side-box {
+  padding: 1.5em 1.75em;
+  background-color: rgba(198, 198, 198, 0.1);
+  margin-top: 7px;
+  font-size: 0.95em;
+  line-height: 1.666;
+}
+@media only screen and (max-width: 1080px) {
+  .af__side-box {
+    margin-top: 15px;
+  }
+}
+.af__side-box strong {
+  font-weight: 600;
+}
+
+.job_application_content_above_form {
+  margin-bottom: 2em;
+}
+.job_application_content_above_form h2 {
+  font-weight: 400;
+  margin: 0.5em 0;
+}
+.job_application_content_above_form h3 {
+  font-weight: 300;
+  margin: 0.5em 0;
+}
+
+#job_application_form {
+  width: 100%;
+}
+
+.job_application_form__import-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 21px;
+}
+@media only screen and (max-width: 1080px) {
+  .job_application_form__import-buttons {
+    flex-wrap: wrap;
+  }
+}
+.job_application_form__import-buttons .job__application__import-button {
+  display: block;
+  width: calc(50% - 6px);
+  color: #FFFFFF;
+  font-size: 0.8rem;
+  line-height: 1;
+  font-weight: 600;
+  text-transform: uppercase;
+  height: 45px;
+  padding-left: 20px;
+  display: flex;
+  justify-content: space-between;
+  padding-right: 20px;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+@media only screen and (max-width: 1080px) {
+  .job_application_form__import-buttons .job__application__import-button {
+    width: 100%;
+    margin: 6px 0;
+  }
+}
+.job_application_form__import-buttons .job__application__import-button:hover {
+  opacity: 0.9;
+}
+.job_application_form__import-buttons .job__application__import-button svg {
+  width: auto;
+}
+.job_application_form__import-buttons .job__application__import-button#jobAppImportXing {
+  background-color: #006567;
+}
+.job_application_form__import-buttons .job__application__import-button#jobAppImportXing svg {
+  height: 24px;
+  transform: translateY(-2px);
+}
+.job_application_form__import-buttons .job__application__import-button#jobAppImportLinkedIn {
+  background-color: #006699;
+}
+.job_application_form__import-buttons .job__application__import-button#jobAppImportLinkedIn svg {
+  height: 20px;
+}

@@ -1,0 +1,26 @@
+#adminmenu li#toplevel_page_prescreen-career-settings .wp-submenu li:nth-child(2) {
+  border-bottom: 1px solid rgba(240, 245, 250, 0.2);
+  padding-bottom: 0.5em;
+}
+#adminmenu li#toplevel_page_prescreen-career-settings .wp-submenu li:nth-child(3) {
+  border-bottom: 1px solid rgba(240, 245, 250, 0.2);
+  padding-bottom: 0.5em;
+  padding-top: 0.5em;
+}
+#adminmenu li#toplevel_page_prescreen-career-settings .wp-submenu li:nth-child(3) + li {
+  padding-top: 0.5em;
+}
+#adminmenu li#toplevel_page_prescreen-career-settings .wp-submenu li:nth-child(6) {
+  border-bottom: 1px solid rgba(240, 245, 250, 0.2);
+  padding-bottom: 0.5em;
+}
+#adminmenu li#toplevel_page_prescreen-career-settings .wp-submenu li:nth-child(6) + li {
+  padding-top: 0.5em;
+}
+#adminmenu li#toplevel_page_prescreen-career-settings .wp-submenu li:nth-child(8) {
+  border-bottom: 1px solid rgba(240, 245, 250, 0.2);
+  padding-bottom: 0.5em;
+}
+#adminmenu li#toplevel_page_prescreen-career-settings .wp-submenu li:nth-child(8) + li {
+  padding-top: 0.5em;
+}
