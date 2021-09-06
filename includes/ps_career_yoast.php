@@ -120,9 +120,11 @@ function get_job_description(){
 	if(isset($_GET['sh'])){
 		$shortHandle = $_GET['sh'];
 		$data = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."prescreen_jobs WHERE shorthandle = '".$shortHandle."'");
-		$description = $data[0]->simple_html_content;
-		$description = preg_replace('/<h1[^>]*>([\s\S]*?)<\/h1[^>]*>/', '', $description);
-		$description = strip_tags($description);
+		if (is_object($data[0])){
+			$description = $data[0]->simple_html_content;
+			$description = preg_replace('/<h1[^>]*>([\s\S]*?)<\/h1[^>]*>/', '', $description);
+			$description = strip_tags($description);
+		}
 	} else {
 		$description = '';
 	}

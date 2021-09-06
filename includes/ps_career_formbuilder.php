@@ -232,7 +232,7 @@ if( isset( $_GET['email'] ) && isset( $_GET['candidatekey'] ) && $_GET['email'] 
 	if( isset( $_GET['loginwithlinkedin'] ) || isset( $_GET['code'] )){
 		echo do_shortcode('[login_with_linkedin]');
 	} 
-	if( isset( $_GET['loginwithxing'] )){
+	if( isset( $_GET['loginwithxing'] ) || isset( $_GET['oauth_token'] )){
 		echo do_shortcode('[login_with_xing]');
 	} 
 	?>

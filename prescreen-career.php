@@ -3,7 +3,7 @@
 * Plugin Name: Prescreen Career
 * Plugin URI: https://careerpages.prescreen.io/
 * Description: Prescreen Career
-* Version: 1.36
+* Version: 1.22
 * Author: Flo Hauck
 * Author URI: http://www.flohauck.de
 */ 
@@ -24,7 +24,8 @@ require_once __DIR__ . "/includes/hybridauth/autoload.php"; // OAuth
 use Hybridauth\Exception\Exception;
 use Hybridauth\Hybridauth;
 use Hybridauth\HttpClient;
-
+require_once __DIR__ . "/includes/php-oauth/http.php";
+require_once __DIR__ . "/includes/php-oauth/oauth_client.php";
 
 // Setup Menu in Backend
 add_action( "admin_init", "prescreen_career_register_settings" ); // set options
@@ -317,21 +318,6 @@ function jal_install_data() {
 	
 }
 
-// Deactivating Plugin Remove Cron Job and Delete Tables
-
-/*
-register_deactivation_hook( __FILE__, 'cron_deactivation' );
-function cron_deactivation() {
-	wp_clear_scheduled_hook( 'schedule_job_import' );
-}
-register_deactivation_hook( __FILE__, 'prescreen_career_remove_database' );
-function prescreen_career_remove_database() {
-	 global $wpdb;
-	 $sql = "DROP TABLE IF EXISTS ".$wpdb->prefix ."prescreen_jobs,".$wpdb->prefix ."prescreen_jobs_last_update,".$wpdb->prefix ."prescreen_jobs_templates,".$wpdb->prefix ."prescreen_jobs_departments,".$wpdb->prefix ."prescreen_jobs_cities,".$wpdb->prefix ."prescreen_jobs_positiontypes,".$wpdb->prefix ."prescreen_jobs_seniorities,".$wpdb->prefix ."prescreen_jobs_instances,".$wpdb->prefix ."prescreen_jobs_teams,".$wpdb->prefix ."prescreen_jobs_custom_data_fields,".$wpdb->prefix ."prescreen_jobs_industries" ;
-	 $wpdb->query($sql);
-	 delete_option("my_plugin_db_version");
-}   
-*/
 
 register_activation_hook( __FILE__, 'shiba_activate' );
 function shiba_activate($networkwide) {
@@ -354,6 +340,7 @@ function shiba_activate($networkwide) {
 				schedule_application_custom_fields_import();
 				schedule_application_custom_fields_template_import();
 				schedule_delete_old_candidates();
+				schedule_delete_old_logs();
 				//add_action( 'cron_activation', 'importJobs' ); 
 				//restore_current_blog();
 			}
@@ -369,6 +356,7 @@ function shiba_activate($networkwide) {
 		schedule_application_custom_fields_import();
 		schedule_application_custom_fields_template_import();
 		schedule_delete_old_candidates();
+		schedule_delete_old_logs();
 	}
 	jal_install();    
 	jal_install_data(); 
@@ -491,6 +479,15 @@ function schedule_delete_old_candidates() {
 	
 }
 
+add_action( 'schedule_delete_old_logs', 'deleteOldLogs' ); 
+function schedule_delete_old_logs() {
+	
+	$cronInterval = 'daily';
+	
+	wp_schedule_event( time(), $cronInterval, 'schedule_delete_old_logs' );
+	
+}
+
 add_action( 'schedule_application_custom_fields_template_import', 'importApplicationCustomFieldFormTemplates' ); 
 function schedule_application_custom_fields_template_import() {
 	
@@ -591,7 +588,8 @@ function googleIndexingIsActive(){
 
 function writeLogging($log){
 	global $wpdb;
-	$currentDate = date('d.m.Y H:i:s', time());
+	//$currentDate = date('d.m.Y H:i:s', time());
+	$currentDate = date('YmdHi', time());
 
 	$wpdb->insert( 
 		$wpdb->prefix.'prescreen_logging',
@@ -1408,85 +1406,7 @@ function updateGoogleIndex(){
 	$returnGoogleIndexNew = 0;
 	
 	$googleStatusCode = '';
-	
-	//error_log("[".date("j.m.Y, H:i")."] CRON JOB GOOGLE INDEX UPDATE (DRY RUN): Write all Jobs where status != 1 in Delete Array \n", 3, plugin_dir_path(__FILE__)."".date("Y_m_j")."_debug.log");
-	//writeLogging('CRON JOB GOOGLE INDEX UPDATE (DRY RUN): Write all Jobs where status != 1 in Delete Array');
-	/*
-	$getJobsWithStatusZero = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."prescreen_jobs WHERE status != 1");
-	foreach ($getJobsWithStatusZero as $job) { 
-		
-		// Update google_indexing -> inactive
-		array_push($googleIndexingDelete, $job->shorthandle);
-	}
-	//print_r($googleIndexingDelete);
-	echo count($googleIndexingDelete).' Jobs mit Status 0 in DELETE-Array geschrieben.<br />';
-	*/
-	
-	//error_log("[".date("j.m.Y, H:i")."] CRON JOB GOOGLE INDEX UPDATE (DRY RUN): Write all Jobs where google_index = '' in New Array \n", 3, plugin_dir_path(__FILE__)."".date("Y_m_j")."_debug.log");
-	//writeLogging('CRON JOB GOOGLE INDEX UPDATE (DRY RUN): Write all Jobs where google_index = '' in New Array');
-	/*
-	$getJobsWithStatusOne = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."prescreen_jobs WHERE google_indexing = ''");
-	foreach ($getJobsWithStatusOne as $job) { 
-		
-		// Push shorthandle to $googleIndexingDelete Array
-		array_push($googleIndexingNew, $job->shorthandle);
-	}
 
-	echo count($googleIndexingNew).' Jobs mit google_indexing = "" in NEW-Array geschrieben.<br />';
-	*/
-	
-	
-	//error_log("[".date("j.m.Y, H:i")."] CRON JOB GOOGLE INDEX UPDATE (DRY RUN): Try to send all Jobs from Delete Array to Google \n", 3, plugin_dir_path(__FILE__)."".date("Y_m_j")."_debug.log");
-	//writeLogging('CRON JOB GOOGLE INDEX UPDATE (DRY RUN): Try to send all Jobs from Delete Array to Google');
-	/*
-	foreach ($googleIndexingDelete as $deleteShorthandle) {
-		//echo $deleteShorthandle;
-		if(googleIndexing($deleteShorthandle,'delete') === 200){
-			$googleStatusCode = googleIndexing($deleteShorthandle,'delete');
-			$wpdb->query( $wpdb->prepare( 'DELETE FROM '.$wpdb->prefix.'prescreen_jobs WHERE shorthandle = %d', $deleteShorthandle) );
-			$returnGoogleIndexDel++;
-		} elseif(googleIndexing($deleteShorthandle,'delete') === 429){
-			$googleStatusCode = googleIndexing($deleteShorthandle,'delete');
-			break;
-		} else {
-			$googleStatusCode = googleIndexing($deleteShorthandle,'delete');
-			continue;
-		}
-	}
-	*/
-	
-	//error_log("[".date("j.m.Y, H:i")."] CRON JOB GOOGLE INDEX UPDATE (DRY RUN): Try to send all Jobs from New Array to Google \n", 3, plugin_dir_path(__FILE__)."".date("Y_m_j")."_debug.log");
-	//writeLogging('CRON JOB GOOGLE INDEX UPDATE (DRY RUN): Try to send all Jobs from New Array to Google');
-	
-	/*
-	foreach ($googleIndexingNew as $newShorthandle) {
-		//echo $newShorthandle;
-		//print_r(googleIndexing($newShorthandle,'new'));
-		if(googleIndexing($newShorthandle,'new') === 200){
-			$googleStatusCode = googleIndexing($newShorthandle,'new');
-			$wpdb->update( $wpdb->prefix.'prescreen_jobs',
-				array( 
-					'google_indexing' => 'active'
-				), 
-				array( 'shorthandle' => $newShorthandle ), //Welcher Eintrag ist davon betroffen?
-				array( 
-					'%s'
-				),
-				array( '%s' )
-			);
-			$returnGoogleIndexNew++;
-		} elseif(googleIndexing($newShorthandle,'new') === 429){
-			$googleStatusCode = googleIndexing($newShorthandle,'new');
-			break;
-		} else {
-			$googleStatusCode = googleIndexing($newShorthandle,'new');
-			continue;
-		}
-	}
-	*/
-	
-	
-	//echo $returnGoogleIndexDel.' Jobs wurden aus dem Google Index entfernt - '.$returnGoogleIndexNew.' Jobs wurden an den Google Index gesendet<br />Last Status Code: '.$googleStatusCode.'';
 	wp_die();
 }
 
@@ -1512,7 +1432,8 @@ function job_snippet_function($atts) {
 		'type' => '',
 		'jobcontent' => '',
 		'show' => '',
-		'format' => ''
+		'format' => '',
+		'default' => ''
 	), $atts));
 	
 	if(isset($_GET['sh']) || $_COOKIE['job_sh'] ){
@@ -1534,7 +1455,11 @@ function job_snippet_function($atts) {
 				array_push($returnArray, $template[0]->$show); 
 			}
 			$returnArray = implode(", ", $returnArray);
-			return $returnArray;
+			if(empty($returnArray)){
+				return $default;
+			} else {
+				return $returnArray;
+			}
 		} elseif($type === 'department'){
 			$returnArray = array();
 			$array = explode(',', $data[0]->department);
@@ -1548,7 +1473,11 @@ function job_snippet_function($atts) {
 				array_push($returnArray, $template[0]->$show); 
 			}
 			$returnArray = implode(", ", $returnArray);
-			return $returnArray;
+			if(empty($returnArray)){
+				return $default;
+			} else {
+				return $returnArray;
+			}
 		} elseif($type === 'city'){
 			$returnArray = array();
 			$array = explode(',', $data[0]->city);
@@ -1562,7 +1491,11 @@ function job_snippet_function($atts) {
 				array_push($returnArray, $template[0]->$show); 
 			}
 			$returnArray = implode(", ", $returnArray);
-			return $returnArray;
+			if(empty($returnArray)){
+				return $default;
+			} else {
+				return $returnArray;
+			}
 		} elseif($type === 'positiontype'){
 			$returnArray = array();
 			$array = explode(',', $data[0]->positiontype);
@@ -1576,7 +1509,11 @@ function job_snippet_function($atts) {
 				array_push($returnArray, $template[0]->$show); 
 			}
 			$returnArray = implode(", ", $returnArray);
-			return $returnArray;
+			if(empty($returnArray)){
+				return $default;
+			} else {
+				return $returnArray;
+			}
 		} elseif($type === 'seniority'){
 			$returnArray = array();
 			$array = explode(',', $data[0]->seniority);
@@ -1590,7 +1527,11 @@ function job_snippet_function($atts) {
 				array_push($returnArray, $template[0]->$show); 
 			}
 			$returnArray = implode(", ", $returnArray);
-			return $returnArray;
+			if(empty($returnArray)){
+				return $default;
+			} else {
+				return $returnArray;
+			}
 		} elseif($type === 'instance'){
 			$returnArray = array();
 			$array = explode(',', $data[0]->instance);
@@ -1608,7 +1549,11 @@ function job_snippet_function($atts) {
 			
 			
 			$returnArray = implode(", ", $returnArray);
-			return $returnArray;
+			if(empty($returnArray)){
+				return $default;
+			} else {
+				return $returnArray;
+			}
 			
 		} elseif($type === 'team'){
 			$returnArray = array();
@@ -1623,7 +1568,11 @@ function job_snippet_function($atts) {
 				array_push($returnArray, $template[0]->$show); 
 			}
 			$returnArray = implode(", ", $returnArray);
-			return $returnArray;
+			if(empty($returnArray)){
+				return $default;
+			} else {
+				return $returnArray;
+			}
 		} elseif(strpos($type, 'custom_data_fields') !== false){
 			$returnArray = array();
 			preg_match('#\((.*?)\)#', $type, $match);
@@ -1660,7 +1609,12 @@ function job_snippet_function($atts) {
 			}
 
 			$returnArray = implode(", ", $returnArray);
-			return $returnArray;
+			if(empty($returnArray)){
+				return $default;
+			} else {
+				return $returnArray;
+			}
+			
 			
 		} elseif($type === 'industry'){
 			$returnArray = array();
@@ -1676,7 +1630,11 @@ function job_snippet_function($atts) {
 				array_push($returnArray, $template[0]->$show); 
 			}
 			$returnArray = implode(", ", $returnArray);
-			return $returnArray;
+			if(empty($returnArray)){
+				return $default;
+			} else {
+				return $returnArray;
+			}
 		} elseif($type === 'description'){
 			$arr = json_decode($data[0]->description);
 			if($jobcontent != ''){
@@ -1710,6 +1668,8 @@ function job_snippet_function($atts) {
 		} else {
 			return $data[0]->$type;
 		}
+		
+		
 	}
 
 }
@@ -2054,31 +2014,15 @@ function job_list_function($atts) {
 		".$wpdb->prefix."prescreen_jobs.shorthandle,".$buildSelect." 
 		FROM ".$wpdb->prefix."prescreen_jobs
 		".$joinSelect."");
-		
-		//DELETE LATER
-		//if ( is_user_logged_in() ) {
-		//	print_r('isValues = 0 <br /><br />');	
-		//}
+
 	} else {
 		$jobList = $wpdb->get_results("SELECT 
 		".$wpdb->prefix."prescreen_jobs.shorthandle,".$buildSelect." 
 		FROM ".$wpdb->prefix."prescreen_jobs
 		".$joinSelect." ".getWhereSQL($where,$isValues,$isSelector)."");
 		
-		//DELETE LATER
-		//if ( is_user_logged_in() ) {
-			
-		//	print_r('isValues != 0 <br /><br />');
-		//	print_r(getWhereSQL($where,$isValues,$isSelector).'<br /><br />');
-		//}
 	}
 	
-	//DELETE LATER
-	//if ( is_user_logged_in() ) {
-	//	print_r($buildSelect.'<br /><br />');
-	//	print_r($joinSelect.'<br /><br />');
-	//	print_r($jobList);
-	//}
 
 	if($debug === 'true'){
 		echo '<div>SHOW jobLIST ARRAY</div><pre style="text-align: left;">';
@@ -2573,6 +2517,72 @@ function job_apply_button_function($atts) {
 add_shortcode('job_apply_button', 'job_apply_button_function');
 
 
+function job_print_button_function($atts) {
+	global $wpdb;
+	global $jal_db_version;
+	global $wp;
+	
+	extract(shortcode_atts(array(
+		'title' => 'Jetzt bewerben',
+		'background_color' => '',
+		'color' => '',
+		'rel' => '',
+		'class' => '',
+		'type' => '',
+		'external_url' => ''
+	), $atts));
+	
+	$shortHandle = '';
+	if( isset( $_COOKIE['job_sh'] )) $shortHandle = $_COOKIE['job_sh'];
+	if( isset( $_GET['sh'] )) $shortHandle = $_GET['sh'];
+	
+	$getHandle = $wpdb->get_results("SELECT handle FROM ".$wpdb->prefix."prescreen_jobs WHERE shorthandle = '".$shortHandle."'");
+	$handle = $getHandle[0]->handle;
+
+	
+	if($background_color != ''){
+		$background_color_op = 'background-color: '.$background_color.';';
+	} else {
+		$background_color_op = '';
+	}
+	
+	if($color != ''){
+		$color_op = 'color: '.$color.';';
+	} else {
+		$color_op = '';
+	}
+
+	if($rel != ''){
+		$rel_op = 'rel="'.$rel.'" ';
+	} else {
+		$rel_op = '';
+	}	
+	if($external_url != ''){
+		return '<div class="job__button"><a target="_blank" href="'.$external_url.$handle.'?mode=print" '.$rel_op.' class="'.$class.' button button--contained" style="'.$background_color_op.' '.$color_op.' margin-top: 1em;">'.$title.'</a></div>';	
+	} else {
+		return '<div class="job__button"><a href="javascript:window.print();" '.$rel_op.' class="'.$class.' button button--contained" style="'.$background_color_op.' '.$color_op.' margin-top: 1em;">'.$title.'</a></div>';	
+	}
+	
+	
+	
+}
+add_shortcode('job_print_button', 'job_print_button_function');
+
+
+function button_wrapper_function($atts, $content = null) {
+	$content = preg_replace('#^<\/p>|<p>$#', '', $content);
+	$content = preg_replace('/<p>\s*(<div.*>*.<\/div>)\s*<\/p>/iU', '\1', $content);
+	$array = array (
+		'<p>['      => '[',
+		']</p>'     => ']',
+		']<br />'   => ']'
+	);
+	$content = strtr($content, $array);
+	
+	return '<div class="button__wrapper">'.do_shortcode($content).'</div>';
+}
+add_shortcode('button_wrapper', 'button_wrapper_function');
+	
 
 function job_application_function(){
  
@@ -2898,6 +2908,7 @@ function importApplicationSource(){
 		
 		if(isset($array_appSource) && $array_appSource != ''){
 			$delete = $wpdb->query("TRUNCATE TABLE `".$wpdb->prefix."prescreen_application_source`");
+			if(!empty($array_appSource['data'])){
 			foreach ($array_appSource['data'] as &$appSource) {
 				$appSourceId = $appSource->id;
 				foreach ($appSource->translations as &$appSourceTranslations) {
@@ -2917,6 +2928,7 @@ function importApplicationSource(){
 					);
 				}
 				
+			}
 			}
 		
 		}
@@ -2955,7 +2967,7 @@ function importApplicationCustomFields(){
 			// Set All Entries to false
 			$wpdb->query( $wpdb->prepare( 'UPDATE '.$wpdb->prefix.'prescreen_application_custom_fields SET is_active = %d','false' ) ); 
 			
-			
+			if(!empty($array_appSource['data'])){
 			foreach ($array_appSource['data'] as &$appSource) {
 
 				
@@ -3001,6 +3013,7 @@ function importApplicationCustomFields(){
 				}	
 				
 				
+			}
 			}
 			
 			echo $countEntries.' Custom Fields wurden importiert.';
@@ -3246,6 +3259,17 @@ function deleteOldApplications(){
 	//wp_die();
 }
 
+function deleteOldLogs(){
+	global $wpdb;
+	$currentDate = date('Ymd', time());
+	$currentDate = date('Ymd', strtotime($currentDate.'- 7 days'));
+	
+	//$wpdb->query( $wpdb->prepare( 'UPDATE '.$wpdb->prefix.'prescreen_candidates SET test = %s',$currentDate ) ); 
+	$wpdb->query( $wpdb->prepare( 'DELETE FROM '.$wpdb->prefix.'prescreen_logging WHERE created < %s', $currentDate) );
+	$wpdb->query( $wpdb->prepare( 'DELETE FROM '.$wpdb->prefix.'prescreen_logging WHERE length(created) > 13') );
+	//wp_die();
+}
+
 
 function acf_manipulate_form_builder_custom_field( $field ) {
     global $wpdb;
@@ -3276,30 +3300,6 @@ function acf_manipulate_form_builder_custom_field( $field ) {
 		}
 		
 	}
-
-    // if has rows
-	/*
-    if( have_rows('my_select_values', 'option') ) {
-        
-        // while has rows
-        while( have_rows('my_select_values', 'option') ) {
-            
-            // instantiate row
-            the_row();
-            
-            
-            // vars
-            $value = get_sub_field('value');
-            $label = get_sub_field('label');
-
-            
-            // append to choices
-            $field['choices'][ $value ] = $label;
-            
-        }
-        
-    }
-	*/
 
 
     // return the field
@@ -3867,9 +3867,7 @@ function currentUrl($server){
     return $http . '://' . htmlentities($host) . '' . htmlentities($requestUri);
 }
 
-// Send Job Application Form
-//add_action('wp_ajax_nopriv_login_with_linked_in', 'loginWithLinkedIn');
-//add_action('wp_ajax_login_with_linked_in', 'loginWithLinkedIn');
+// Login with LinkedIn
 function loginWithLinkedIn(){
 	
 	
@@ -4027,11 +4025,10 @@ function loginWithLinkedIn(){
 
 add_shortcode('login_with_linkedin', 'loginWithLinkedIn');
 
-
-
+// Login with Xing
 function loginWithXing(){
 	
-	/*
+	
 	if(get_option('PS_job_applications_xing_consumer_key') && get_option('PS_job_applications_xing_consumer_secret')){
 	
 	    $http = 'http';
@@ -4051,33 +4048,94 @@ function loginWithXing(){
 
 		define("CALLBACK_URL", $http.'://'.$host.$callbackLink);
 		define("AUTH_URL", "https://api.xing.com/auth/oauth2/authorize");
-		define("ACCESS_TOKEN_URL", "https://example/oauth2/token");
+		define("ACCESS_TOKEN_URL", "https://api.xing.com/auth/oauth2/token");
 		define("CLIENT_ID", get_option('PS_job_applications_xing_consumer_key'));
 		define("CLIENT_SECRET", get_option('PS_job_applications_xing_consumer_secret'));
 		define("SCOPE", ""); // optional
 		
-		$url = AUTH_URL."?"
-		   ."response_type=code"
-		   ."&client_id=". urlencode(CLIENT_ID)
-		   ."&scope=". urlencode(SCOPE)
-		   ."&redirect_uri=". urlencode(CALLBACK_URL)
-		;
+
 		
-		print_r($url);
+		$client = new oauth_client_class;
+		$client->debug = 0;
+		$client->debug_http = 1;
+		$client->server = 'XING';
+		$client->redirect_uri = CALLBACK_URL;
+		
+		$client->client_id = urlencode(CLIENT_ID); 
+		$application_line = __LINE__;
+		$client->client_secret = urlencode(CLIENT_SECRET); 
+		//print_r(CALLBACK_URL);
+		
+		if(strlen($client->client_id) == '' || strlen($client->client_secret) == 0)
+			die('Please go to XING My Apps page https://dev.xing.com/applications , '.
+				'create an application, and in the line '.$application_line.
+				' set the client_id to Consumer key and client_secret with Consumer secret.');
+		
+		if(($success = $client->Initialize()))
+		{
+			if(($success = $client->Process()))
+			{
+				if(strlen($client->access_token))
+				{
+					$success = $client->CallAPI(
+						'https://api.xing.com/v1/users/me', 
+						'GET', array(), array('FailOnAccessError'=>true), $user);
+				}
+			}
+			$success = $client->Finalize($success);
+		}
+		//print_r($success);
+		//print_r('test before success');
+		if($client->exit)
+			exit;
+		if($success){
+			//return $user->users[0]->active_email;
+			//echo '<pre>';
+			//print_r($user);
+			//echo '</pre>';
+			return '<script>
+			jQuery(document).ready(function($) {
+				if($(\'[name="email"]\').length){
+					$(\'[name="email"]\').val(\''.$user->users[0]->active_email.'\');
+				}
+				if($(\'[name="firstname"]\').length){
+					$(\'[name="firstname"]\').val(\''.$user->users[0]->first_name.'\');
+				}
+				if($(\'[name="lastname"]\').length){
+					$(\'[name="lastname"]\').val(\''.$user->users[0]->last_name.'\');
+				}
+				if($(\'[name="gender"]\').length){
+					$(\'[name="gender"]\').val(\''.$user->users[0]->gender.'\');
+				}
+				if($(\'[name="street"]\').length){
+					$(\'[name="street"]\').val(\''.$user->users[0]->private_address->street.'\');
+				}
+				if($(\'[name="zip_code"]\').length){
+					$(\'[name="zip_code"]\').val(\''.$user->users[0]->private_address->zip_code.'\');
+				}
+				if($(\'[name="city_name"]\').length){
+					$(\'[name="city_name"]\').val(\''.$user->users[0]->private_address->city.'\');
+				}
+			});
+			</script>';
+			//print_r('test');
+		} else {
+			//echo $client->error;
+			return '<div style="width: 100%; text-align: left;">'.$client->error.'</div>';
+		}
+		
 	
 	} else {
 		return '<div style="width: 100%; text-align: left;">Es ist ein Fehler aufgetreten. Bitte informieren Sie einen Administrator um die Zugangsdaten zu überprüfen.</div>';
 	}
-	*/
+	
 	
 }
 add_shortcode('login_with_xing', 'loginWithXing');
 
 
 
-/**
- * Add/Remove appropriate CSS classes to Menu so Submenu displays open and the Menu link is styled appropriately.
- */
+// Add/Remove appropriate CSS classes to Menu so Submenu displays open and the Menu link is styled appropriately.
 function pscareer_correct_current_menu(){
 	$screen = get_current_screen();
 	if ( $screen->id == 'jobapplicationform' || $screen->id == 'edit-jobapplicationform' ) {

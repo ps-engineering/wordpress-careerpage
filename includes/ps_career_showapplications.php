@@ -121,7 +121,8 @@ class Application_List_Table extends WP_List_Table
 		global $wpdb;
         $data = array();
 		$count = 0;
-		$records = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."prescreen_candidates");
+		//$records = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."prescreen_candidates");
+        $records = $wpdb->get_results("SELECT id,userid,doubleoptin,shorthandle,email,userstate,created FROM ".$wpdb->prefix."prescreen_candidates");
 		foreach($records as $application){
 			$count++;
 
@@ -138,21 +139,25 @@ class Application_List_Table extends WP_List_Table
 			}
 			
 			if($application->doubleoptin === 'unnecessary'){
-				$doubleoptin = '<div style="width: 20px; height: 20px;"><svg style="width: 100%; height: 100%; object-fit: contain;" height="96" width="96" viewbox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><path d="M48 4C23.7 4 4 23.699 4 48s19.7 44 44 44 44-19.699 44-44S72.3 4 48 4zm0 80c-19.882 0-36-16.118-36-36s16.118-36 36-36 36 16.118 36 36-16.118 36-36 36z"/><path d="M64.284 37.17a4.002 4.002 0 00-5.657 0L44.485 51.313l-5.657-5.657a4 4 0 10-5.657 5.658l8.484 8.483a4.002 4.002 0 005.658 0l16.97-16.97a3.998 3.998 0 00.001-5.657z"/></svg></div>';
+				$doubleoptin = '<div style="width: 20px; height: 20px;" title="Kein Double-Opt-In notwendig"><svg style="width: 100%; height: 100%; object-fit: contain;" height="96" width="96" viewbox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><path d="M48 4C23.7 4 4 23.699 4 48s19.7 44 44 44 44-19.699 44-44S72.3 4 48 4zm0 80c-19.882 0-36-16.118-36-36s16.118-36 36-36 36 16.118 36 36-16.118 36-36 36z"/><path d="M64.284 37.17a4.002 4.002 0 00-5.657 0L44.485 51.313l-5.657-5.657a4 4 0 10-5.657 5.658l8.484 8.483a4.002 4.002 0 005.658 0l16.97-16.97a3.998 3.998 0 00.001-5.657z"/></svg></div>';
 			} else if($application->doubleoptin === 'finished'){
-				$doubleoptin = '<div style="width: 20px; height: 20px;"><svg style="width: 100%; height: 100%; object-fit: contain;" id="Icons" version="1.1" viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><style>.st0{fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}</style><path class="st0" d="M3 8l13 8 13-8M27 22l-4 4-2-2"/><circle class="st0" cx="24" cy="24" r="7"/><path class="st0" d="M17.1 25H7c-2.2 0-4-1.8-4-4V7c0-2.2 1.8-4 4-4h18c2.2 0 4 1.8 4 4v12.1"/></svg></div>';
+				$doubleoptin = '<div style="width: 20px; height: 20px;" title="Double-Opt-In via Mail abgeschlossen"><svg style="width: 100%; height: 100%; object-fit: contain;" id="Icons" version="1.1" viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><style>.st0{fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}</style><path class="st0" d="M3 8l13 8 13-8M27 22l-4 4-2-2"/><circle class="st0" cx="24" cy="24" r="7"/><path class="st0" d="M17.1 25H7c-2.2 0-4-1.8-4-4V7c0-2.2 1.8-4 4-4h18c2.2 0 4 1.8 4 4v12.1"/></svg></div>';
 			} else {
 				$doubleoptin = '';
 			}
 			
 			if($application->shorthandle){
 				$jobTitleCitySelect = "SELECT title,city FROM ".$wpdb->prefix."prescreen_jobs WHERE shorthandle = '".$application->shorthandle."'";
-				$jobTitle = $wpdb->get_results($jobTitleCitySelect)[0]->title;
-				//print_r($jobTitle);
-				//$jobCitySelect = "SELECT city FROM ".$wpdb->prefix."prescreen_jobs WHERE shorthandle = '".$application->shorthandle."'";
-				$jobCityID = $wpdb->get_results($jobTitleCitySelect)[0]->city;
-				$jobCitySelect = $wpdb->get_results("SELECT title FROM ".$wpdb->prefix."prescreen_jobs_cities WHERE id = ".$jobCityID."");
-				$jobCity = $jobCitySelect[0]->title;
+                
+                if(!empty($jobTitleCitySelect) && !empty($jobTitleCitySelect[0])){
+                    if(is_object($wpdb->get_results($jobTitleCitySelect)[0])){
+        				$jobTitle = $wpdb->get_results($jobTitleCitySelect)[0]->title;
+        
+        				$jobCityID = $wpdb->get_results($jobTitleCitySelect)[0]->city;
+        				$jobCitySelect = $wpdb->get_results("SELECT title FROM ".$wpdb->prefix."prescreen_jobs_cities WHERE id = ".$jobCityID."");
+        				$jobCity = $jobCitySelect[0]->title;
+                    }
+                }
 			} else {
 				$jobTitle = '';
 				$jobCity = '';

@@ -60,7 +60,7 @@ class Logging_List_Table extends WP_List_Table {
 		global $wpdb;
         $data = array();
 		$count = 0;
-		$records = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."prescreen_logging");
+		$records = $wpdb->get_results("SELECT id,description,created FROM ".$wpdb->prefix."prescreen_logging");
 		foreach($records as $customfield){
 			// Show only Custom Fields that has not type File
 
@@ -69,7 +69,8 @@ class Logging_List_Table extends WP_List_Table {
 	
 		        $data[] = array(
 					'description'	=> $customfield->description,
-					'created'	=> $customfield->created
+                    'created'		=> date("d.m.Y H:i", strtotime($customfield->created)),
+                    'sortcreated'   => $customfield->created
 				);
 
 		}
@@ -88,8 +89,8 @@ class Logging_List_Table extends WP_List_Table {
 
     private function sort_data( $a, $b ){
         // Set defaults
-        $orderby = 'created';
-        $order = 'asc';
+        $orderby = 'sortcreated';
+        $order = 'desc';
 
         // If orderby is set, use this as the sort column
         if(!empty($_GET['orderby'])){
